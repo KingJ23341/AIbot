@@ -17,6 +17,10 @@
 {
   "user": "hi",
   "bot": "Hello! How can I help?"
-}
+},
+    {
+      "user": "How are you?",
+      "bot": "As an AI language model, I don't have any feelings."
+    }
   ]
 }
