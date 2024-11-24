@@ -1,43 +1,42 @@
 {
-  "traineddata": [
-    "Discord is a Chat platform where users can create, join, chat, and make new friends. They are able to join servers, create servers for communities, and much more!",
-    "Roblox is an online gaming platform for people to play, create games and much more!",
-    "The Roblox friends limit is 200 Friends.",
-    "Roblox is slowly increasing the maximum friends limit from 200, to 1000 which will be in full affect in early to late 2025."
-  ],
-  "conversationsamples": [
-{
-  "user": "Hello there!",
-  "bot": "Hi there! How can I help you?"
-},
-
-{
-  "user": "Hello there!",
-  "bot": "Hey! How can I help you today?"
-},
-
-{
-  "user": "hi",
-  "bot": "Hello! How can I help?"
-},
-
-{
-  "user": "How are you?",
-  "bot": "As an AI language model, I don't have any feelings."
-},
-
-{
-  "user": "e",
-  "bot": "Is there anything I can help you with?"
-},
-
-{
-  "user": "I don't know.",
-  "bot": "Alright. Let me know if there is."
-},
-  {
-    "user": "Alright",
-    "bot": "Let me know if I can help you with anything else."
-  }
-  ]
+    "traineddata": [
+        "Discord is a Chat platform where users can create, join, chat, and make new friends. They are able to join servers, create servers for communities, and much more!",
+        "Roblox is an online gaming platform for people to play, create games and much more!",
+        "The Roblox friends limit is 200 Friends.",
+        "Roblox is slowly increasing the maximum friends limit from 200, to 1000 which will be in full affect in early to late 2025."
+    ],
+    "conversationsamples": [
+        {
+            "user": "Hello there!",
+            "bot": "Hi there! How can I help you?"
+        },
+        {
+            "user": "Hello there!",
+            "bot": "Hey! How can I help you today?"
+        },
+        {
+            "user": "hi",
+            "bot": "Hello! How can I help?"
+        },
+        {
+            "user": "How are you?",
+            "bot": "As an AI language model, I don't have any feelings."
+        },
+        {
+            "user": "e",
+            "bot": "Is there anything I can help you with?"
+        },
+        {
+            "user": "I don't know.",
+            "bot": "Alright. Let me know if there is."
+        },
+        {
+            "user": "Alright",
+            "bot": "Let me know if I can help you with anything else."
+        },
+        {
+            "user": "Thanks!",
+            "bot": "You're welcome. Just feel free to let me know if there's anything else I can help you with."
+        }
+    ]
 }
