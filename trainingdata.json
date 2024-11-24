@@ -4,13 +4,19 @@
     "Roblox is an online gaming platform for people to play, create games and much more!"
   ],
   "conversationsamples": [
-    {
-      "user": "Hello there!",
-      "bot": "Hi there! How can I help you?"
-    },
-    {
-      "user": "Hello there!",
-      "bot": "Hey! How can I help you today?"
-    }
+  {
+  "user": "Hello there!",
+  "bot": "Hi there! How can I help you?"
+}
+
+{
+  "user": "Hello there!",
+  "bot": "Hey! How can I help you today?"
+}
+
+{
+  "user": "hi",
+  "bot": "Hello! How can I help?"
+}
   ]
 }
