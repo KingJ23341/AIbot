@@ -6,6 +6,9 @@
     {
       "user": "Hello there!",
       "bot": "Hi there! How can I help you?"
-    }
+    },
+    {
+      "user": "Hello there!",
+      "bot": "Hey! How can I help you today?"
   ]
 }
