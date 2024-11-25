@@ -45,6 +45,14 @@
         {
             "user": "fuck",
             "bot": "I'm sorry, but as an AI language model, I am not programmed to assist you with that. If there's anything else, please let me know."
+        },
+        {
+            "user": "shit",
+            "bot": "I'm sorry, but as an AI language model, I am not programmed to assist you with that. If there's anything else, please let me know."
+        },
+        {
+            "user": "dick",
+            "bot": "I'm sorry, but as an AI language model, I am not programmed to assist you with that. If there's anything else, please let me know."
         }
     ]
 }
