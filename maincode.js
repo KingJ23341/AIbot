@@ -1,92 +1,99 @@
+const dataUrl = 'https://raw.githubusercontent.com/KingJ23341/AIbot/refs/heads/main/trainingdata.json';
+let trainingData = null;
+let conversationHistory = [];
 
-    const dataUrl = 'https://raw.githubusercontent.com/KingJ23341/AIbot/refs/heads/main/trainingdata.json';
-    let trainingData = null;
-    let conversationHistory = [];
+async function loadTrainingData() {
+  const startTime = performance.now();
+  try {
+    const response = await fetch(dataUrl);
+    const data = await response.json();
+    const endTime = performance.now();
 
-    async function loadTrainingData() {
-      const startTime = performance.now();
-      try {
-        const response = await fetch(dataUrl);
-        const data = await response.json();
-        const endTime = performance.now();
+    const fetchTime = (endTime - startTime).toFixed(2);
+    const sizeInBytes = new TextEncoder().encode(JSON.stringify(data)).length;
+    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+    const sizeInMB = (sizeInKB / 1024).toFixed(2);
 
-        const fetchTime = (endTime - startTime).toFixed(2);
-        const sizeInBytes = new TextEncoder().encode(JSON.stringify(data)).length;
-        const sizeInKB = (sizeInBytes / 1024).toFixed(2);
-        const sizeInMB = (sizeInKB / 1024).toFixed(2);
+    trainingData = data;
+    appendMessage('System', `Training data loaded in ${fetchTime} ms.`);
+    appendMessage('System', `Data size: ${sizeInBytes} bytes (${sizeInKB} KB, ${sizeInMB} MB)`);
 
-        trainingData = data;
-        appendMessage('System', `Training data loaded in ${fetchTime} ms.`);
-        appendMessage('System', `Data size: ${sizeInBytes} bytes (${sizeInKB} KB, ${sizeInMB} MB)`);
+  } catch (error) {
+    console.error('Error loading training data:', error);
+    appendMessage('System', 'Failed to load training data.');
+  }
+}
 
-      } catch (error) {
-        console.error('Error loading training data:', error);
-        appendMessage('System', 'Failed to load training data.');
+function tokenize(text) {
+  return text.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
+}
+
+function getResponse(userInput) {
+  if (!trainingData) {
+    return "I'm still loading. Please wait!";
+  }
+
+  // Check if the input is a basic math operation (like 2 + 2 or 3 * 3)
+  if (userInput.match(/^\d+\s*[\+\-\*\/]\s*\d+$/)) {
+    try {
+      return eval(userInput);  // Calculate the math expression
+    } catch (error) {
+      return "Sorry, I couldn't calculate that.";
+    }
+  }
+
+  const inputTokens = tokenize(userInput);
+  let bestMatch = null;
+  let maxOverlap = 0;
+
+  // Use conversation samples
+  trainingData.conversationsamples.forEach((sample) => {
+    const botTokens = tokenize(sample.user);
+    const overlap = botTokens.filter((token) => inputTokens.includes(token)).length;
+
+    if (overlap > maxOverlap) {
+      maxOverlap = overlap;
+      bestMatch = sample.bot;
+    }
+  });
+
+  // Use training data if no match found
+  if (!bestMatch) {
+    trainingData.traineddata.forEach((data) => {
+      const overlap = data.toLowerCase().split(' ').filter((word) => inputTokens.includes(word)).length;
+      if (overlap > maxOverlap) {
+        maxOverlap = overlap;
+        bestMatch = data;
       }
-    }
+    });
+  }
 
-    function tokenize(text) {
-      return text.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/);
-    }
+  return bestMatch || "I don't understand that. Can you rephrase?";
+}
 
-    function getResponse(userInput) {
-      if (!trainingData) {
-        return "I'm still loading. Please wait!";
-      }
+function appendMessage(sender, message) {
+  const chatWindow = document.getElementById('chat-window');
+  const p = document.createElement('p');
+  p.innerHTML = `<strong>${sender}:</strong> ${message}`;
+  chatWindow.appendChild(p);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
 
-      const inputTokens = tokenize(userInput);
-      let bestMatch = null;
-      let maxOverlap = 0;
+function refreshTrainingData() {
+  appendMessage('System', 'Refreshing training data...');
+  loadTrainingData();
+}
 
-      // Use conversation samples
-      trainingData.conversationsamples.forEach((sample) => {
-        const botTokens = tokenize(sample.user);
-        const overlap = botTokens.filter((token) => inputTokens.includes(token)).length;
-
-        if (overlap > maxOverlap) {
-          maxOverlap = overlap;
-          bestMatch = sample.bot;
-        }
-      });
-
-      // Use training data if no match found
-      if (!bestMatch) {
-        trainingData.traineddata.forEach((data) => {
-          const overlap = data.toLowerCase().split(' ').filter((word) => inputTokens.includes(word)).length;
-          if (overlap > maxOverlap) {
-            maxOverlap = overlap;
-            bestMatch = data;
-          }
-        });
-      }
-
-      return bestMatch || "I don't understand that. Can you rephrase?";
-    }
-
-    function appendMessage(sender, message) {
-      const chatWindow = document.getElementById('chat-window');
-      const p = document.createElement('p');
-      p.innerHTML = `<strong>${sender}:</strong> ${message}`;
-      chatWindow.appendChild(p);
-      chatWindow.scrollTop = chatWindow.scrollHeight;
-    }
-
-
-    function refreshTrainingData() {
-      appendMessage('System', 'Refreshing training data...');
-      loadTrainingData();
-    }
-
-    function updateTrainingExport() {
-      const exportContainer = document.getElementById('export-text');
-      const newConversationSamples = trainingData.conversationsamples.map(sample => 
-        `{
+function updateTrainingExport() {
+  const exportContainer = document.getElementById('export-text');
+  const newConversationSamples = trainingData.conversationsamples.map(sample => 
+    `{
   "user": "${sample.user}",
   "bot": "${sample.bot}"
 }`).join('\n\n');
 
-      exportContainer.textContent = newConversationSamples;
-    }
+  exportContainer.textContent = newConversationSamples;
+}
 
 async function handleMessage() {
   const userInput = document.getElementById('user-input').value.trim();
@@ -151,15 +158,13 @@ ${exportData}
 }`;
 }
 
+// Event Listeners
+document.getElementById('send-btn').addEventListener('click', handleMessage);
+document.getElementById('user-input').addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') handleMessage();
+});
+document.getElementById('refresh-btn').addEventListener('click', refreshTrainingData);
+document.getElementById('export-btn').addEventListener('click', exportConversations);
 
-
-    // Event Listeners
-    document.getElementById('send-btn').addEventListener('click', handleMessage);
-    document.getElementById('user-input').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') handleMessage();
-    });
-    document.getElementById('refresh-btn').addEventListener('click', refreshTrainingData);
-    document.getElementById('export-btn').addEventListener('click', exportConversations);
-
-    // Load training data on start
-    loadTrainingData();
+// Load training data on start
+loadTrainingData();
