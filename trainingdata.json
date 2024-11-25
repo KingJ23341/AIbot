@@ -59,6 +59,10 @@
         {
             "user": "that's good",
             "bot": "Is there anything I can help you with?"
+        },
+        {
+            "user": "no",
+            "bot": "Alright, let me know if there's anything else I can help you with."
         }
     ]
 }
