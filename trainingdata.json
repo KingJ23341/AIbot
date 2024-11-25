@@ -37,6 +37,14 @@
         {
             "user": "Thanks!",
             "bot": "You're welcome. Just feel free to let me know if there's anything else I can help you with."
+        },
+        {
+            "user": "idk",
+            "bot": "Alright. Let me know if you need any assistance with anything else."
+        },
+        {
+            "user": "fuck",
+            "bot": "I'm sorry, but as an AI language model, I am not programmed to assist you with that. If there's anything else, please let me know."
         }
     ]
 }
