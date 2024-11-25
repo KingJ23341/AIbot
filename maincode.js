@@ -42,6 +42,22 @@ function getResponse(userInput) {
     }
   }
 
+  // Check if the input is asking to count
+  const countMatch = userInput.match(/count\s*(to|down|from)\s*(\d+)(\s*(to|from)\s*(\d+))?/i);
+  if (countMatch) {
+    const direction = countMatch[1].toLowerCase();
+    let start = parseInt(countMatch[2]);
+    let end = countMatch[5] ? parseInt(countMatch[5]) : 0;
+
+    if (direction === "to") {
+      return countUp(start, end);
+    } else if (direction === "down") {
+      return countDown(start, 0);
+    } else if (direction === "from") {
+      return countUp(start, end);
+    }
+  }
+
   const inputTokens = tokenize(userInput);
   let bestMatch = null;
   let maxOverlap = 0;
@@ -69,6 +85,26 @@ function getResponse(userInput) {
   }
 
   return bestMatch || "I don't understand that. Can you rephrase?";
+}
+
+function countUp(start, end) {
+  if (isNaN(start) || isNaN(end)) return "Please provide valid numbers.";
+  if (start > end) return "The start number must be less than or equal to the end number.";
+  let count = '';
+  for (let i = start; i <= end; i++) {
+    count += i + ' ';
+  }
+  return count.trim();
+}
+
+function countDown(start, end) {
+  if (isNaN(start) || isNaN(end)) return "Please provide valid numbers.";
+  if (start < end) return "The start number must be greater than or equal to the end number.";
+  let count = '';
+  for (let i = start; i >= end; i--) {
+    count += i + ' ';
+  }
+  return count.trim();
 }
 
 function appendMessage(sender, message) {
