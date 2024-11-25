@@ -54,6 +54,10 @@
         {
             "user": "dick",
             "bot": "I'm sorry, but as an AI language model, I am not programmed to assist you with that. If there's anything else, please let me know."
+        },
+        {
+            "user": "that's good",
+            "bot": "Is there anything I can help you with?"
         }
     ]
 }
