@@ -47,31 +47,29 @@ function getResponse(userInput) {
   if (countMatch) {
     const direction = countMatch[1].toLowerCase();
     let start = parseInt(countMatch[2]);
-    let end = countMatch[5] ? parseInt(countMatch[5]) : 0;
+    let end = countMatch[5] ? parseInt(countMatch[5]) : start;
 
-    if (direction === "to") {
+    if (direction === "to" || direction === "from") {
       return countUp(start, end);
     } else if (direction === "down") {
       return countDown(start, 0);
-    } else if (direction === "from") {
-      return countUp(start, end);
     }
   }
 
+  // Handle conversation samples and randomly select responses for duplicates like jokes
   const inputTokens = tokenize(userInput);
   let bestMatch = null;
   let maxOverlap = 0;
 
-  // Use conversation samples
-  trainingData.conversationsamples.forEach((sample) => {
+  const matchedSamples = trainingData.conversationsamples.filter((sample) => {
     const botTokens = tokenize(sample.user);
-    const overlap = botTokens.filter((token) => inputTokens.includes(token)).length;
-
-    if (overlap > maxOverlap) {
-      maxOverlap = overlap;
-      bestMatch = sample.bot;
-    }
+    return botTokens.every(token => inputTokens.includes(token));
   });
+
+  if (matchedSamples.length > 0) {
+    const randomSample = matchedSamples[Math.floor(Math.random() * matchedSamples.length)];
+    bestMatch = randomSample.bot;
+  }
 
   // Use training data if no match found
   if (!bestMatch) {
@@ -145,7 +143,7 @@ async function handleMessage() {
     let response = '';
 
     inquiries.forEach((inquiry, index) => {
-      response += getResponse(inquiry) + (index < inquiries.length - 1 ? ' ' : '');
+      response += getResponse(inquiry) + (index < inquiries.length - 1 ? ' ' : '' );
     });
 
     // Update the last message in the chat window after response generation
@@ -160,16 +158,13 @@ async function handleMessage() {
       let userInputForTraining = prompt("How should the bot respond to this message?");
       if (userInputForTraining) {
         appendMessage('System', `Adding response to training data: ${userInputForTraining}`);
-        // Replace the "I don't understand" fallback with the new user input
         const index = trainingData.conversationsamples.findIndex(sample => sample.user === userInput);
         if (index === -1) {
-          // If no conversation sample exists, add a new one
           trainingData.conversationsamples.push({
             user: userInput,
             bot: userInputForTraining
           });
         } else {
-          // Replace the bot response in the matched sample
           trainingData.conversationsamples[index].bot = userInputForTraining;
         }
         updateTrainingExport();
