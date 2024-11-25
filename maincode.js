@@ -56,6 +56,14 @@ function getResponse(userInput) {
     }
   }
 
+  // Check if the input is asking to pick a random number
+  const randomNumberMatch = userInput.match(/pick a random number(?: from (\d+) to (\d+))?/i);
+  if (randomNumberMatch) {
+    const start = randomNumberMatch[1] ? parseInt(randomNumberMatch[1]) : 0;
+    const end = randomNumberMatch[2] ? parseInt(randomNumberMatch[2]) : Number.MAX_SAFE_INTEGER;
+    return pickRandomNumber(start, end);
+  }
+
   // Handle conversation samples and randomly select responses for duplicates like jokes
   const inputTokens = tokenize(userInput);
   let bestMatch = null;
@@ -83,6 +91,14 @@ function getResponse(userInput) {
   }
 
   return bestMatch || "I don't understand that. Can you rephrase?";
+}
+
+function pickRandomNumber(start, end) {
+  if (isNaN(start) || isNaN(end)) return "Please provide valid numbers.";
+  if (start > end) return "The start number must be less than or equal to the end number.";
+  
+  const randomNum = Math.floor(Math.random() * (end - start + 1)) + start;
+  return randomNum;
 }
 
 function countUp(start, end) {
