@@ -63,6 +63,10 @@
         {
             "user": "no",
             "bot": "Alright, let me know if there's anything else I can help you with."
+        },
+        {
+            "user": "howa re u?",
+            "bot": "As an AI language model, I don't have feelings. Is there anything else?"
         }
     ]
 }
